@@ -1,43 +1,60 @@
 const heightInput = document.querySelector("#height");
 const weightInput = document.querySelector("#weight");
-const bmiBtn = document.querySelector(".bmi__btn");
 const bmiResult = document.querySelector("#result-input");
-const bmi__form = document.querySelector(".bmi__form");
+const bmiForm = document.querySelector(".bmi__form");
 
-function checkValidity(heightValue, weightValue) {
-	if (isNaN(weightValue) || isNaN(heightValue)) {
+function checkValidity(height, weight) {
+	if (isNaN(weight.value) || isNaN(height.value)) {
 		const alert = document.querySelector(".alert");
 		alert.textContent = "Enter a valid number";
 		alert.classList.add("show");
+		height.classList.add("error");
+		weight.classList.add("error");
+
 		setTimeout(() => {
 			alert.classList.remove("show");
+			height.classList.remove("error");
+			weight.classList.remove("error");
 		}, 3000);
-		return;
+		return false;
 	}
+	return true;
 }
 
-function checkValue(heightValue, weightValue) {
-	if (heightValue == "" || weightValue == "") {
+function checkValue(height, weight) {
+	if (height.value === "" || weight.value === "") {
 		const alert = document.querySelector(".alert");
+		alert.textContent = "Please fill in all fields";
 		alert.classList.add("show");
+		height.classList.add("error");
+		weight.classList.add("error");
 		setTimeout(() => {
 			alert.classList.remove("show");
+			height.classList.remove("error");
+			weight.classList.remove("error");
 		}, 3000);
-		return;
+		return false;
 	}
+	return true;
 }
 
-bmi__form.addEventListener("submit", (e) => {
+bmiForm.addEventListener("submit", (e) => {
 	e.preventDefault();
-	let weightValue = weightInput.value;
-	let heightValue = heightInput.value;
 
 	// Check if the values of the inputs are not empty
-	checkValue(heightValue, weightValue);
+	if (!checkValue(heightInput, weightInput)) {
+		return;
+	}
 
 	// Check if the values of the inputs are numbers
-	checkValidity(heightValue, weightValue);
+	if (!checkValidity(heightInput, weightInput)) {
+		return;
+	}
 
-	let bmi = weightValue / (heightValue / 100) ** 2;
-	bmiResult.value = bmi;
+	let bmi = weightInput.value / (heightInput.value / 100) ** 2;
+	bmiResult.value = bmi.toFixed(2); // Round to 2 decimal places
+
+	// Reset all input fields
+	heightInput.value = "";
+	weightInput.value = "";
 });
